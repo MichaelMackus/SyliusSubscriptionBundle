@@ -14,6 +14,7 @@ namespace Sylius\Bundle\SubscriptionBundle\EventListener;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sylius\Component\Cart\Event\CartEvent;
 use Sylius\Component\Core\Model\OrderItemInterface;
+use Sylius\Component\Core\Model\UserInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 
 class UpdateSubscriptionsListener
@@ -57,8 +58,8 @@ class UpdateSubscriptionsListener
                 $now->add($subscription->getInterval())
             );
 
-            if (null !== $token = $this->securityContext->getToken()) {
-                $subscription->setUser($token->getUser());
+            if (null !== $user = $this->getUser()) {
+                $subscription->setUser($user);
             }
 
             if (null === $subscription->getId()) {
@@ -67,5 +68,21 @@ class UpdateSubscriptionsListener
         }
 
         $this->manager->flush();
+    }
+
+    /**
+     * @return UserInterface|null
+     */
+    private function getUser()
+    {
+        if (null === $token = $this->securityContext->getToken()) {
+            return null;
+        }
+
+        if (!$token->getUser() instanceof UserInterface) {
+            return null;
+        }
+
+        return $token->getUser();
     }
 }
