@@ -11,6 +11,9 @@
 
 namespace Sylius\Bundle\SubscriptionBundle\DependencyInjection;
 
+use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
+use Sylius\Bundle\SubscriptionBundle\Form\Type\SubscriptionType;
+use Sylius\Component\Subscription\Model\Subscription;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -18,7 +21,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 class Configuration implements ConfigurationInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getConfigTreeBuilder()
     {
@@ -34,7 +37,7 @@ class Configuration implements ConfigurationInterface
             ->end()
         ;
 
-        $this->addClassesSection($rootNode);
+        $this->addResourcesSection($rootNode);
         $this->addValidationGroupsSection($rootNode);
 
         return $treeBuilder;
@@ -63,24 +66,35 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Adds `classes` section.
+     * Adds `resources` section.
      *
      * @param ArrayNodeDefinition $node
      */
-    private function addClassesSection(ArrayNodeDefinition $node)
+    private function addResourcesSection(ArrayNodeDefinition $node)
     {
         $node
             ->children()
-                ->arrayNode('classes')
-                ->addDefaultsIfNotSet()
+                ->arrayNode('resources')
+                    ->isRequired()
+                    ->addDefaultsIfNotSet()
                     ->children()
                         ->arrayNode('subscription')
-                        ->addDefaultsIfNotSet()
+                            ->addDefaultsIfNotSet()
                             ->children()
-                                ->scalarNode('model')->defaultValue('Sylius\Component\Subscription\Model\Subscription')->end()
-                                ->scalarNode('controller')->defaultValue('Sylius\Bundle\ResourceBundle\Controller\ResourceController')->end()
-                                ->scalarNode('repository')->end()
-                                ->scalarNode('form')->defaultValue('Sylius\Bundle\SubscriptionBundle\Form\Type\SubscriptionType')->end()
+                                ->arrayNode('classes')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('model')->defaultValue(Subscription::class)->cannotBeEmpty()->end()
+                                        ->scalarNode('controller')->defaultValue(ResourceController::class)->cannotBeEmpty()->end()
+                                        ->scalarNode('repository')->end()
+                                        ->arrayNode('form')
+                                            ->addDefaultsIfNotSet()
+                                            ->children()
+                                                ->scalarNode('default')->defaultValue(SubscriptionType::class)->cannotBeEmpty()->end()
+                                            ->end()
+                                        ->end()
+                                    ->end()
+                                ->end()
                             ->end()
                         ->end()
                     ->end()
