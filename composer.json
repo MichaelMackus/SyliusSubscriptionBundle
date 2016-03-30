@@ -25,8 +25,8 @@
 
         "symfony/framework-bundle":        "~2.3",
         "stof/doctrine-extensions-bundle": "1.1.*",
-        "sylius/resource-bundle":          "0.17.*@dev",
-        "sylius/subscription":             "0.17.*@dev"
+        "sylius/resource-bundle":          "0.18.*@dev",
+        "sylius/subscription":             "0.18.*@dev"
     },
     "require-dev": {
         "phpspec/phpspec":   "~2.0",
@@ -44,7 +44,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.17-dev"
+            "dev-master": "0.18-dev"
         }
     }
 }
