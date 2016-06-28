@@ -13,7 +13,9 @@ namespace Sylius\Bundle\SubscriptionBundle\DependencyInjection;
 
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
 use Sylius\Bundle\SubscriptionBundle\Form\Type\SubscriptionType;
+use Sylius\Component\Resource\Factory\Factory;
 use Sylius\Component\Subscription\Model\Subscription;
+use Sylius\Component\Subscription\Model\SubscriptionInterface;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -85,8 +87,10 @@ class Configuration implements ConfigurationInterface
                                     ->addDefaultsIfNotSet()
                                     ->children()
                                         ->scalarNode('model')->defaultValue(Subscription::class)->cannotBeEmpty()->end()
+                                        ->scalarNode('interface')->defaultValue(SubscriptionInterface::class)->cannotBeEmpty()->end()
                                         ->scalarNode('controller')->defaultValue(ResourceController::class)->cannotBeEmpty()->end()
-                                        ->scalarNode('repository')->end()
+                                        ->scalarNode('repository')->cannotBeEmpty()->end()
+                                        ->scalarNode('factory')->defaultValue(Factory::class)->end()
                                         ->arrayNode('form')
                                             ->addDefaultsIfNotSet()
                                             ->children()
