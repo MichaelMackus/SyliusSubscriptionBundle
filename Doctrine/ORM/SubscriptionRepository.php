@@ -65,12 +65,17 @@ class SubscriptionRepository extends EntityRepository implements SubscriptionRep
 
     protected function getQueryBuilder()
     {
-        $queryBuilder = parent::getQueryBuilder();
+        $queryBuilder = $this->createQueryBuilder($this->getAlias());
 
         return $queryBuilder
             ->join($this->getAlias() . '.orderItem', 'i')
             ->join('i.order', 'O')
             ->andWhere($queryBuilder->expr()->isNotNull('O.completedAt'))
         ;
+    }
+
+    protected function getAlias()
+    {
+        return 's';
     }
 }
