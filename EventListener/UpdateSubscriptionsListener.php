@@ -45,6 +45,14 @@ class UpdateSubscriptionsListener
                 continue;
             }
 
+            if (null === $subscription->getInterval()) {
+                // remove subscription if there's no interval
+                $this->manager->remove($subscription);
+                $item->setSubscription(null);
+
+                continue;
+            }
+
             $now = new \DateTime();
             $subscription->setVariant($item->getVariant());
             $subscription->setQuantity($item->getQuantity());
